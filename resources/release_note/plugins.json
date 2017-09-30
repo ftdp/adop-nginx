@@ -46,7 +46,7 @@
                         "link": "",
                         "linkCreate": {
                             "host": "selenium",
-                            "endPath": "//grid/console"
+                            "endPath": "grid/console"
                         }
                     },
                     {

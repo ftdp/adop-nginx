@@ -3,6 +3,11 @@ FROM ubuntu:14.04
 MAINTAINER Robert Northard, <robert.a.northard>
 
 ENV NGINX_VERSION 1.8.0
+ENV NGINX_SSL off
+ENV NGINX_PORT 80
+ENV LDAP_PROTOCOL ldap
+ENV CUSTOM_CONF false
+ENV CUSTOM_HTML false
 
 ############## nginx setup ##############
 
@@ -17,7 +22,8 @@ RUN apt-get update \
         libldap2-dev \
         libssl-dev \
         wget \
-        jq
+        jq \
+        dos2unix
 
 # See http://wiki.nginx.org/InstallOptions
 RUN mkdir /var/log/nginx \
@@ -54,5 +60,9 @@ COPY resources/release_note/ /resources/release_note/
 COPY resources/scripts/ /resources/scripts/
 COPY templates/configuration/ /templates/configuration/
 RUN chmod +x /resources/scripts/*
+# Fixes for builds on windows machines
+# See https://confluence.atlassian.com/kb/starting-service-on-linux-throws-a-no-such-file-or-directory-error-794203722.html
+RUN dos2unix /resources/scripts/* \
+    && sed -i -e 's/\r//g' /etc/init.d/nginx
 
 CMD ["/resources/scripts/entrypoint.sh"]

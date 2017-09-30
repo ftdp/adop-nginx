@@ -1,14 +1,22 @@
 #!/bin/bash
 set -e
 
-cp -R /resources/configuration/* /etc/nginx/
-cp -R /resources/release_note/* /usr/share/nginx/html/
+if [ "$CUSTOM_CONF" == "false" ] || [ -z "$(ls -A "/etc/nginx")" ] ; then
+  echo "reloading nginx configuration data from the container" ;
+  cp -R /resources/configuration/* /etc/nginx/ ;
+fi
+
+if [ "$CUSTOM_HTML" == "false" ] || [ -z "$(ls -A "/usr/share/nginx/html")" ] ; then
+  echo "reloading HTML landing page and release notes data from the container" ;
+  cp -R /resources/release_note/* /usr/share/nginx/html/ ;
+fi
 
 # Auto populate the release note page with the blueprints
 /resources/scripts/reload_release_notes.sh
 
 # Copy and replace tokens
-perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : $&/eg' < "/templates/configuration/nginx.conf" 2> /dev/null 1> "/etc/nginx/nginx.conf"
+perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : ""/eg' < "/templates/configuration/nginx.conf" 2> /dev/null 1> "/etc/nginx/nginx.conf"
+perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : "$1 must be defined"/eg' < "/templates/configuration/sites-enabled/tools-context.conf" 2> /dev/null 1> "/etc/nginx/sites-enabled/tools-context.conf"
 
 # wait for all downstream services to be up and running
 # This is a temporary solution that allows NGINX to wait for all dependencies and after start, this should be removed when 

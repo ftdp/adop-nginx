@@ -17,6 +17,7 @@ fi
 # Copy and replace tokens
 perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : ""/eg' < "/templates/configuration/nginx.conf" 2> /dev/null 1> "/etc/nginx/nginx.conf"
 perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : "$1 must be defined"/eg' < "/templates/configuration/sites-enabled/tools-context.conf" 2> /dev/null 1> "/etc/nginx/sites-enabled/tools-context.conf"
+perl -p -i -e 's/###([^#]+)###/defined $ENV{$1} ? $ENV{$1} : "$1 must be defined"/eg' < "/templates/configuration/sites-enabled/selenium.conf" 2> /dev/null 1> "/etc/nginx/sites-enabled/selenium.conf"
 
 # wait for all downstream services to be up and running
 # This is a temporary solution that allows NGINX to wait for all dependencies and after start, this should be removed when 

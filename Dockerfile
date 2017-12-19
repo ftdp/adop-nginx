@@ -30,7 +30,7 @@ RUN mkdir /var/log/nginx \
     && mkdir -p /etc/nginx/sites-enabled \
     && mkdir -p /usr/share/nginx/html \
     && cd ~ \
-    && git clone https://github.com/kvspb/nginx-auth-ldap.git \
+    && git clone https://github.com/svscorp/nginx-auth-ldap \
     && git clone https://github.com/nginx/nginx.git \
     && cd nginx \
     && git checkout tags/release-${NGINX_VERSION} \

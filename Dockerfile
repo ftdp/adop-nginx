@@ -45,7 +45,6 @@ RUN mkdir /var/log/nginx \
         --http-log-path=/var/log/nginx/access.log \ 
     && make install \
     && cd .. \
-    && rm -rf nginx-auth-ldap \
     && rm -rf nginx
 
 COPY templates/nginx/nginx.init /etc/init.d/nginx
